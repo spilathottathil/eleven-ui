@@ -50,7 +50,11 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8080/feed/discussions')
+    fetch('http://localhost:8080/feed/discussions?page='+page,{
+      headers :{
+        'Authorization' : 'Bearer ' + this.props.token,      
+      }
+    })
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch posts.');
@@ -127,7 +131,11 @@ formData.append('image',postData.image);
       method : method,
       //no need to set header as appl/json as we are sending formdata with file upload now. 
     
-      body : formData
+      body : formData,
+      headers :{
+        Authorization : 'Bearer ' + this.props.token
+        }
+
     }).then(res => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('Creating or editing a post failed!');
@@ -177,7 +185,12 @@ formData.append('image',postData.image);
 
   deletePostHandler = postId => {
     this.setState({ postsLoading: true });
-    fetch('URL')
+    fetch('http://localhost:8080/feed/discussion/' + postId,{
+        method : 'DELETE',
+        headers :{
+          Authorization : 'Bearer ' + this.props.token
+        }
+      })
       .then(res => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('Deleting a post failed!');
